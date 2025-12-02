@@ -1,0 +1,30 @@
+services:
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8000:80" 
+    networks:
+      - api-gateway-net
+    depends_on:
+      - user-service
+      - order-service
+    restart: always
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    networks:
+      - api-gateway-net
+    restart: always
+
+  order-service:
+    build: ./order-service
+    container_name: order-service
+    networks:
+      - api-gateway-net
+    restart: always
+
+networks:
+  api-gateway-net:
+    driver: bridge

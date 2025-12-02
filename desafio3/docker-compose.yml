@@ -1,0 +1,43 @@
+services:
+  web:
+    build: ./web
+    container_name: desafio3_web
+    ports:
+      - "5000:5000"
+    environment:
+      REDIS_HOST: cache  
+      DB_HOST: db        
+    networks:
+      - app-net
+   
+    depends_on:
+      - db
+      - cache
+    restart: always
+
+  db:
+    image: postgres:14-alpine
+    container_name: desafio3_db
+    environment:
+      POSTGRES_USER: user_app
+      POSTGRES_PASSWORD: app_password
+      POSTGRES_DB: desafio3_db
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - app-net
+    restart: always
+
+  cache:
+    image: redis:6-alpine
+    container_name: desafio3_cache
+    networks:
+      - app-net
+    restart: always
+
+networks:
+  app-net:
+    driver: bridge
+
+volumes:
+  db-data:

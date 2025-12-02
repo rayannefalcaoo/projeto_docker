@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:14-alpine
+    container_name: desafio2_postgres
+    environment:
+      POSTGRES_USER: user_desafio
+      POSTGRES_PASSWORD: pass_desafio
+      POSTGRES_DB: desafio2_db
+    
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+      - ./db/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user_desafio"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
+    networks:
+      - persistence-net
+
+  reader:
+    build: ./reader
+    container_name: desafio2_reader
+    depends_on:
+      db:
+        condition: service_healthy 
+    networks:
+      - persistence-net
+    profiles: ["reader"] 
+
+networks:
+  persistence-net:
+    driver: bridge
+
+volumes:
+  db_volume:
+    name: dados_persistentes_desafio2

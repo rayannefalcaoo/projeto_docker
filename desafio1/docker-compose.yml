@@ -1,0 +1,21 @@
+services:
+  servidor:
+    build: ./server
+    container_name: server
+    ports:
+      - "8080:8080"
+    networks:
+      - rede-projeto2
+    hostname: server
+
+  cliente:
+    build: ./client
+    container_name: client
+    networks:
+      - rede-projeto2
+    depends_on:
+      - servidor
+    
+networks:
+  rede-projeto2:
+    driver: bridge

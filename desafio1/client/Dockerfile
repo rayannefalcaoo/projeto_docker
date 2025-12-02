@@ -1,9 +1,3 @@
-FROM python:3.13
+FROM curlimages/curl
 
-COPY client.py /client.py
-
-RUN pip install requests
-
-EXPOSE 8080
-
-CMD ["python", "/client.py"]
+CMD ["/bin/sh", "-c", "while true; do echo 'Fazendo requisição...'; curl http://servidor:8080; echo '---'; sleep 3; done"]
